@@ -58,6 +58,9 @@ export function observe(data) {
     // 对这个对象进行劫持
     if (typeof data !== 'object' || data === null) return // 只对对象进行劫持
 
+    // 如果对象被代理过，则不需再进行代理了
+    if(data.__ob__ instanceof Observer) return data.__ob__
+
     // 如果一个对象被劫持过了，那就不需要再被劫持了（要判断一个对象是否被劫持过，可以添加一个实例，用实例来判断是否被劫持过）
     return new Observer(data)
 }
