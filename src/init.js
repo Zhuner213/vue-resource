@@ -1,4 +1,5 @@
 import { compileToFunction } from "./compiler/index"
+import { mountComponent } from "./lifecycle"
 import { initState } from "./state"
 
 export function initMixin(Vue) { // 给 Vue 增加 init方法
@@ -43,10 +44,14 @@ export function initMixin(Vue) { // 给 Vue 增加 init方法
             if(template) {
                 const render = compileToFunction(template)
                 opts.render = render
+                // console.log(opts.render)
             }    
         }
 
-        opts.render // 最终就可以获取 render方法
+        // 组件的挂载
+        mountComponent(vm, el)
+
+        // 最终就可以获取 render方法
 
         // <script> 标签引用的 vue.global.js 这个编译过程是在浏览器运行的
         // runtime 是不包含模版编译的，整个编译打包过程是通过 loader来转义 .vue文件的，用 runtime 的时候不能用 options.template

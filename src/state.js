@@ -4,6 +4,10 @@ export function initState(vm) {
     const opts = vm.$options // 获取用户所有的配置项
     // 初始化 data 属性
     if (opts.data) initData(vm)
+    // 初始化 ？？？ 属性
+    // if (opts.props) initProps
+    
+    // ......
 }
 
 function proxy(vm, target, data) {
