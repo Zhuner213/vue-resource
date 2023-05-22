@@ -65,7 +65,7 @@ function genChild(children) {
 // 生成 渲染代码
 function codegen(ast) {
     let codeStr = '' // 利用 ast抽象语法树 生成的 渲染代码
-    codeStr = `_c('${ast.tag}',${ast.attrs.length > 0 ? genProps(ast.attrs) : undefined}${ast.children.length > 0 ? genChild(ast.children) : undefined})`
+    codeStr = `_c('${ast.tag}',${ast.attrs.length > 0 ? genProps(ast.attrs) : null}${ast.children.length > 0 ? genChild(ast.children) : undefined})`
 
     return codeStr
 }
@@ -79,9 +79,7 @@ export function compileToFunction(template) {
     // template是一段 outerHTML文本
     const ast = parseHTML(template)
 
-    // console.log(ast)
     // 2.生成 render方法（render方法执行后的返回结果就是 虚拟DOM）
-
     // 模版引擎的实现原理 就是 with + new Function
     let code = codegen(ast)
     code = `with(this){return ${code}}`
