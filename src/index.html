@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 我们可以给模版中的属性，增加一个收集器 dep -->
+    <!-- 页面渲染的时候 -->
+    <div id="app">
+        <div style="color: red;font-size: 16px;">
+            {{name}} hello {{age}} ddd
+        </div>
+        <span>abc{{age}}ddd</span>
+    </div>
+    <script src="../dist/vue.js"></script>
+    <script>
+        // 响应式的数据变化，数据变化了我可以监测到数据的变化
+        // 数据的取值 和 更改值我们要监控到
+        const vm = new Vue({
+            data() { // 代理数据
+                return {
+                    name: 'Diana',
+                    age: 19,
+                    info: {
+                        wife: 'Ava',
+                        height: '一米八'
+                    },
+                    arr: [1, [2, { name: 'Ava' }], { a: 3 }]
+                }
+            },
+            el: '#app', // 我们要将数据 解析到 el元素上
+            // template: '<div>123</div>'
+        })
+        // vm.$mount('#app')
+        // vm.$mount()
+
+        // 1.模版引擎：性能差，需要正则匹配替换，vue1.0的时候，没有引入 虚拟DOM 的改变
+        // 2.采用虚拟DOM，数据变化后比较虚拟DOM的差异，最后只更新需要更新的地方
+        // 3.核心就是我们需要将 模版变成我们的 JS语法，通过 JS语法生成虚拟DOM
+
+        // 从一个东西 变成 另一个东西 语法之间的转化（就像 es6 -> es5）
+        // 我们需要先变成 ast语法树 再重新组装代码变成新的语法 将 template语法 转换成 render函数
+
+        // 1）将数据先处理成响应式 initState（针对对象来说主要是增加 defineProperty 针对数组就是重写方法）
+        // 2）模版编译：将模版先转换成 ast抽象语法树，再用 ast 生成 render 方法
+        // 3）调用 render 函数：会进行取值操作，产生对应的虚拟DOM，_c('div', null, _v(_s(name))) 触发 get方法
+        // 4）将虚拟DOM渲染成真实DOM
+    </script>
+</body>
+
+</html>
