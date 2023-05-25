@@ -10,12 +10,15 @@
 
 <body>
     <!-- 我们可以给模版中的属性，增加一个收集器 dep -->
-    <!-- 页面渲染的时候 -->
+    <!-- 页面渲染的时候，我们将渲染逻辑封装到watcher中，vm._update(vm._render()) -->
+    <!-- 让dep记住这个watcher即可，稍后属性变化了可以找到对应的dep中存放的watcher进行重新渲染 -->
+    <!-- 观察者模式 -->
+    <!-- 只有在模板里面取值的时候，才会做依赖收集 -->
     <div id="app">
         <div style="color: red;font-size: 16px;">
-            {{name}} hello {{age}} ddd
+            姓名：{{name}}
         </div>
-        <span>abc{{age}}ddd</span>
+        <span>年龄：{{age}}</span>
     </div>
     <script src="../dist/vue.js"></script>
     <script>
@@ -36,6 +39,11 @@
             el: '#app', // 我们要将数据 解析到 el元素上
             // template: '<div>123</div>'
         })
+
+        setTimeout(() => {
+            vm.name = 'Ava'
+            vm.age = 188
+        }, 2000)
         // vm.$mount('#app')
         // vm.$mount()
 

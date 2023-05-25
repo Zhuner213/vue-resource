@@ -1,3 +1,4 @@
+import Wacther from "./observe/watcher"
 import { createElementVNode, createTextVNode } from "./vdom/index"
 
 function createElm(vnode) {
@@ -85,9 +86,13 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
     vm.$el = el
     // 1.调用 render 方法产生 虚拟 DOM
     // 2.根据虚拟 DOM 产生 真实 DOM
-    vm._update(vm._render()) // vm.$options.render 虚拟节点
-
-    // 3.插入到 el元素中
+    // 3.插入到el元素中
+    const updateComponent = () => {
+        vm._update(vm._render()) // vm.$options.render 虚拟节点
+    }
+    
+    const watcher = new Wacther(vm, updateComponent, true) // true 用于标识是一个渲染watcher
+    console.log(watcher,11111)
 }
 
 // vue 核心流程：1）创造了响应式数据  2）模版转换成 ast抽象语法树
