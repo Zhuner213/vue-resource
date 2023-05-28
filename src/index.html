@@ -43,7 +43,12 @@
         setTimeout(() => {
             vm.name = 'Ava'
             vm.age = 188
-        }, 2000)
+            // nextTick不是创建了一个异步任务，而是将这个任务维护到了队列中，等待主线程执行完毕，再从队列中顺序取出相关任务进行执行
+            vm.$nextTick(() => {
+                console.log(this,123)
+                console.log(app.innerHTML)
+            })
+        }, 1000)
         // vm.$mount('#app')
         // vm.$mount()
 

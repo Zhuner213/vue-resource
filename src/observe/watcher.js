@@ -34,9 +34,85 @@ class Wacther { // 不同组件有不同的watcher，目前只有一个：渲染
         }
     }
 
-    // 重新渲染更新模板
+    // 将当前watcher存放进队列进行等待
     update() {
-        this.get()
+        queueWatcher(this)
+    }
+
+    // 重新渲染更新模板
+    run() {
+        this.get() // 渲染的时候用的是最新的vm来渲染的
+    }
+}
+
+let queue = [] // 存储将要执行的watcher的队列
+let has = {} // 用于去重的对象
+let pending = false // 防抖
+
+function flushSchedulerQueue() {
+    const flushQueue = queue.slice(0)
+    queue = []
+    has = {}
+    pending = false
+    flushQueue.forEach(watcher => watcher.run()) // 在刷新过程中可能还会有新的watcher，重新放到queue中
+}
+
+function queueWatcher(watcher) {
+    const id = watcher.id
+    // 如果去重对象中不包含当前watcher的id，则说明当前watcher没有添加进队列，可以进行push操作
+    if (!has[id]) {
+        has[id] = true
+        queue.push(watcher)
+        // 不管我们的update执行多少次，但是最终只执行一轮刷新操作
+        if (!pending) {
+            nextTick(flushSchedulerQueue)
+            pending = true
+        }
+    }
+
+}
+
+let callbacks = []
+let waiting = false
+
+function flushCallbacks() {
+    const cbs = callbacks.slice(0)
+    callbacks = []
+    waiting = false
+    cbs.forEach(cb => cb()) // 按照顺序依次执行
+}
+
+// nextTick没有直接使用某个api，而是采用优雅降级的方式
+// 内部先采用的是promise（ie不兼容）=> MutationObserver（h5的api）=> setImmediate（ie专享）=> setTimeout（终极方案）
+let timerFunc
+if(Promise) {
+    timerFunc = () => {
+        Promise.resolve().then(flushCallbacks)
+    }
+}else if(MutationObserver) {
+    let observer = new MutationObserver(flushCallbacks) // 这里传入的回调是异步执行的
+    let textNode = document.createTextNode(1)
+    observer.observe(textNode, {
+        characterData: true
+    })
+    timerFunc = () => {
+        textNode.textContent = 2
+    }
+}else if(setImmediate) {
+    timerFunc = () => {
+        setImmediate(flushCallbacks)
+    }
+}else {
+    timerFunc = () => {
+        setTimeout(flushCallbacks)
+    }
+}
+
+export function nextTick(cb) { // 先执行内部的还是先执行用户的？（看谁先调用）
+    callbacks.push(cb) // 维护nextTick中的callback方法
+    if (!waiting) {
+        timerFunc() // 最后一起刷新
+        waiting = true
     }
 }
 
