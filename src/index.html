@@ -19,8 +19,14 @@
             姓名：{{name}}
         </div>
         <span>年龄：{{age}}</span>
+
+        <!-- 这里取值的时候会调用JSON.stringfy()，会对数组中的对象取值，所以对象会收集依赖 -->
+        <div>数组：{{arr}}</div>
+
+        <div>对象：{{info}}</div>
     </div>
     <script src="../dist/vue.js"></script>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.js"></script> -->
     <script>
         // 响应式的数据变化，数据变化了我可以监测到数据的变化
         // 数据的取值 和 更改值我们要监控到
@@ -29,26 +35,41 @@
                 return {
                     name: 'Diana',
                     age: 19,
-                    info: {
+                    info: { // 给对象增加dep，如果后续用户增添了属性，可以触发dep更新
                         wife: 'Ava',
-                        height: '一米八'
+                        height: '一米八',
+                        obj: {
+                            name: '123'
+                        }
                     },
-                    arr: [1, [2, { name: 'Ava' }], { a: 3 }]
+                    arr: [1, 2, { a: 3 }] // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
                 }
             },
+            // data: {
+            //     name: 'Diana',
+            //     age: 19,
+            //     info: {
+            //         wife: 'Ava',
+            //         height: '一米八'
+            //     },
+            //     arr: [1, 2, { a: 3 }]
+            // },
             el: '#app', // 我们要将数据 解析到 el元素上
             // template: '<div>123</div>'
         })
 
-        setTimeout(() => {
-            vm.name = 'Ava'
-            vm.age = 188
-            // nextTick不是创建了一个异步任务，而是将这个任务维护到了队列中，等待主线程执行完毕，再从队列中顺序取出相关任务进行执行
-            vm.$nextTick(() => {
-                console.log(this,123)
-                console.log(app.innerHTML)
-            })
-        }, 1000)
+        // console.log(vm.info)
+
+        // setTimeout(() => {
+        //     vm.name = 'Ava'
+        //     vm.age = 188
+        //     // nextTick不是创建了一个异步任务，而是将这个任务维护到了队列中，等待主线程执行完毕，再从队列中顺序取出相关任务进行执行
+        //     vm.$nextTick(() => {
+        //         console.log(this,123)
+        //         console.log(app.innerHTML)
+        //     })
+        // }, 1000)
+
         // vm.$mount('#app')
         // vm.$mount()
 

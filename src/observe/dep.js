@@ -25,7 +25,7 @@ class Dep {
     }
 }
 
-Dep.target = null
+Dep.target = null // Dep.target用来存放当前的wathcer实例
 
 export default Dep
 

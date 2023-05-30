@@ -40,10 +40,13 @@ function patch(oldVNode, vnode) {
         const parentElm = elm.parentNode // 拿到父元素
 
         let newElm = createElm(vnode)
-        // console.log(newElm)
+
+        console.log(`通过虚拟DOM生成真实DOM并准备替换模板：`, newElm)
+
         parentElm.insertBefore(newElm, elm.nextSibling)
         parentElm.removeChild(elm) // 删除老节点
 
+        console.log('将template替换为真实DOM')
         return newElm
     }else {
         // 如果 oldVNode 是虚拟DOM，则说明要走更新功能，即 diff算法
@@ -59,9 +62,10 @@ export function initLifeCycle(Vue) {
     }
 
     Vue.prototype._update = function (vnode) {
+        console.log(`_update()函数接收到render函数返回的虚拟DOM：`, vnode)
         const vm = this
         const el = vm.$el
-        console.log(vnode)
+        // console.log('虚拟DOM：',vnode)
         // patch 既有初始化渲染的功能，又有更新功能
         vm.$el = patch(el, vnode)
     }
@@ -79,6 +83,7 @@ export function initLifeCycle(Vue) {
     Vue.prototype._s = function (value) {
         if (typeof value !== 'object') return value
         return JSON.stringify(value)
+        // return value
     }
 }
 
@@ -92,7 +97,7 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
     }
     
     const watcher = new Wacther(vm, updateComponent, true) // true 用于标识是一个渲染watcher
-    console.log(watcher,11111)
+    // console.log('根实例的watcher：', watcher)
 }
 
 // vue 核心流程：1）创造了响应式数据  2）模版转换成 ast抽象语法树

@@ -16,12 +16,15 @@ class Wacther { // 不同组件有不同的watcher，目前只有一个：渲染
         this.depsId = new Set() // 用于存储dep的id，去重使用
 
         this.get()
+        console.log('watcher初渲染模板完毕')
     }
 
     get() {
         Dep.target = this // 静态属性只有一份
+        console.log(`目前Dep.targer为当前watcher：`, this)
         this.getter() // 会去vm上取值 vm._update(vm._render())
         Dep.target = null // 渲染完毕后就清空
+        console.log('Dep.target已经为空了')
     }
 
     addDep(dep) { // 一个组件对应着多个属性，重复的属性也不记录
@@ -41,7 +44,9 @@ class Wacther { // 不同组件有不同的watcher，目前只有一个：渲染
 
     // 重新渲染更新模板
     run() {
+        console.log('wathcer开始重新渲染最新模板')
         this.get() // 渲染的时候用的是最新的vm来渲染的
+        console.log('wathcer重新渲染模板完毕')
     }
 }
 

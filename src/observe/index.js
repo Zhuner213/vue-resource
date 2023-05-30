@@ -29,7 +29,7 @@ class Observer {
 
     // 遍历对象，对属性依次劫持
     traverse(data) {
-        // ”重新定义“属性 性能差
+        // “重新定义”属性 性能差
         Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
     }
 
@@ -44,7 +44,8 @@ export function defineReactive(target, key, value) {
     let dep = new Dep() // 每一个属性都有一个dep
     Object.defineProperty(target, key, {
         get() { // 取值的时候，会执行get
-            console.log('用户取值了defineReactive')
+            // console.log(`defineReactive：用户从vm._data上取值了${key} => ${JSON.stringify(value)} ${Dep.target ? '（收集watcher）' : '（当前Dep.target为空，不做watcher收集）'}`)
+            console.log(`defineReactive：用户从vm._data上取值了${key} => ${value} ${Dep.target ? '（收集watcher）' : '（当前Dep.target为空，不做watcher收集）'}`)
 
             // 让这个属性的收集器记住当前的watcher
             if(Dep.target) dep.depend()

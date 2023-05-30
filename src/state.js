@@ -14,7 +14,7 @@ function proxy(vm, target, data) {
     for (let key in data) {
         Object.defineProperty(vm, key, {
             get() {
-                console.log('用户取值了proxy')
+                console.log(`proxy：用户直接从vm上取值了${key}，代理到：${target}`)
                 return vm[target][key]
             },
             set(newValue) {
