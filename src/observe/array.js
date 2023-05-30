@@ -41,6 +41,9 @@ methods.forEach(method => {
         // 对新增的内容再次进行观测
         if(inserted) traverseArray(inserted)
 
+        // 数组变化了，通知对应的watcher实现更新逻辑
+        this.__ob__.dep.notify()
+
         return result
     }
 })

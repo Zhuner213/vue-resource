@@ -14,15 +14,13 @@
     <!-- 让dep记住这个watcher即可，稍后属性变化了可以找到对应的dep中存放的watcher进行重新渲染 -->
     <!-- 观察者模式 -->
     <!-- 只有在模板里面取值的时候，才会做依赖收集 -->
+    <!-- 这里取值的时候会调用JSON.stringfy()，会对数组中的对象取值，所以数组里面的对象也会收集依赖 -->
     <div id="app">
         <div style="color: red;font-size: 16px;">
             姓名：{{name}}
         </div>
         <span>年龄：{{age}}</span>
-
-        <!-- 这里取值的时候会调用JSON.stringfy()，会对数组中的对象取值，所以对象会收集依赖 -->
         <div>数组：{{arr}}</div>
-
         <div>对象：{{info}}</div>
     </div>
     <script src="../dist/vue.js"></script>
@@ -42,7 +40,7 @@
                             name: '123'
                         }
                     },
-                    arr: [1, 2, { a: 3 }] // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
+                    arr: [1, 2, { a: 3 }, ['c']] // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
                 }
             },
             // data: {
@@ -58,7 +56,11 @@
             // template: '<div>123</div>'
         })
 
-        // console.log(vm.info)
+        setTimeout(() => {
+            console.log('------------------------------------------')
+            vm.info.title = '一米吧！！！'
+            vm.info.__ob__.dep.notify() // $set原理
+        }, 1000)
 
         // setTimeout(() => {
         //     vm.name = 'Ava'
