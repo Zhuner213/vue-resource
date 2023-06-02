@@ -2,10 +2,10 @@ import Wacther from "./observe/watcher"
 import { createElementVNode, createTextVNode } from "./vdom/index"
 
 function createElm(vnode) {
-    let {tag, data, children, text} = vnode
+    let { tag, data, children, text } = vnode
 
     // 如果 tag 有值且为 String，则说明当前要创建的是 标签元素
-    if(typeof tag === 'string') {
+    if (typeof tag === 'string') {
         vnode.el = document.createElement(tag) // 这里将真实节点和虚拟节点对应起来，
         patchProps(vnode.el, data)
         children.forEach(child => {
@@ -19,12 +19,12 @@ function createElm(vnode) {
 }
 
 function patchProps(el, props) {
-    for(let key in props) {
-        if(key === 'style') { // style: {color: 'red', background: 'yellow'}
-            for(let styleName in props.style) {
+    for (let key in props) {
+        if (key === 'style') { // style: {color: 'red', background: 'yellow'}
+            for (let styleName in props.style) {
                 el.style[styleName] = props.style[styleName]
             }
-        }else{
+        } else {
             el.setAttribute(key, props[key])
         }
     }
@@ -35,7 +35,7 @@ function patch(oldVNode, vnode) {
     const isRealElement = oldVNode.nodeType
 
     // 如果 oldVNode 是真实的元素，则说明当前走的应该是 初次渲染的流程
-    if(isRealElement) {
+    if (isRealElement) {
         const elm = oldVNode // 获取真实的元素
         const parentElm = elm.parentNode // 拿到父元素
 
@@ -48,7 +48,7 @@ function patch(oldVNode, vnode) {
 
         console.log('将template替换为真实DOM')
         return newElm
-    }else {
+    } else {
         // 如果 oldVNode 是虚拟DOM，则说明要走更新功能，即 diff算法
         // diff算法
         console.log('当前是要走diff算法')
@@ -95,7 +95,7 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
     const updateComponent = () => {
         vm._update(vm._render()) // vm.$options.render 虚拟节点
     }
-    
+
     const watcher = new Wacther(vm, updateComponent, true) // true 用于标识是一个渲染watcher
     // console.log('根实例的watcher：', watcher)
 }
@@ -105,3 +105,9 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
 
 // render函数会去产生虚拟节点（使用响应式数据）
 // 根据生成的虚拟节点创造真实的 DOM
+
+export function callHook(vm, hook) { // 调用生命周期钩子
+    let handlers = vm.$options[hook]
+    // 如果存在该钩子（此时必定是数组）
+    if (handlers) handlers.forEach(handler => handler.call(vm))
+}

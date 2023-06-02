@@ -26,6 +26,19 @@
     <script src="../dist/vue.js"></script>
     <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.js"></script> -->
     <script>
+        Vue.mixin({
+            created() {
+                console.log('mixin1-1')
+                console.log('mixin1-2')
+            }
+        })
+        Vue.mixin({
+            created() {
+                console.log('mixin2-1')
+                console.log('mixin2-2')
+            }
+        })
+
         // 响应式的数据变化，数据变化了我可以监测到数据的变化
         // 数据的取值 和 更改值我们要监控到
         const vm = new Vue({
@@ -54,13 +67,18 @@
             // },
             el: '#app', // 我们要将数据 解析到 el元素上
             // template: '<div>123</div>'
+            created() {
+                console.log('我是data里面的created')
+            }
         })
+        const a = Vue.options
+        console.log(a)
 
-        setTimeout(() => {
-            console.log('------------------------------------------')
-            vm.info.title = '一米吧！！！'
-            vm.info.__ob__.dep.notify() // $set原理
-        }, 1000)
+        // setTimeout(() => {
+        //     console.log('------------------------------------------')
+        //     vm.info.title = '一米吧！！！'
+        //     vm.info.__ob__.dep.notify() // $set原理
+        // }, 1000)
 
         // setTimeout(() => {
         //     vm.name = 'Ava'

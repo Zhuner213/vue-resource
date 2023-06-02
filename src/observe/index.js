@@ -5,9 +5,8 @@ class Observer {
     constructor(data) {
         // Object.defineProperty 只能劫持已经存在的属性，删除的、新添加的不行（vue里面为此单独写了一些 api：$set $delete）
 
-        // 给每个对象都增加收集功能
+        // 给每个对象都增加收集功能（增加dep是让其拥有存储当前watcher和进行notify的能力）
         this.dep = new Dep()
-
 
         Object.defineProperty(data, '__ob__', { // 为了让数组能访问到 traverseArray方法
             value: this,                        // 并且给数据增加了一个标识，如果数据上有 __ob__ 则说明这个属性被观测过了
