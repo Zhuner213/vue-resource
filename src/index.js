@@ -10,6 +10,6 @@ function Vue(options) { // options 是用户的配置项
 Vue.prototype.$nextTick = nextTick
 initMixin(Vue) // 扩展了 init 方法
 initLifeCycle(Vue) // 扩展了 _render 和 _update 方法
-initGlobalAPI(Vue)
+initGlobalAPI(Vue) // 扩展Vue上的全局方法
 
 export default Vue

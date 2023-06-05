@@ -10,7 +10,7 @@ class Dep {
     depend() {
         // 这里我们不希望存放重复的watcher,而且刚才只是一个单向的关系: dep -> watcher
         // 同时，我们也希望watcher能够记住dep
-        
+
         // this.subs.push(Dep.target)
         Dep.target.addDep(this) // 让watcher记住dep
     }
@@ -26,6 +26,18 @@ class Dep {
 }
 
 Dep.target = null // Dep.target用来存放当前的wathcer实例
+let stack = []
+
+export function pushTarget(watcher) {
+    stack.push(watcher)
+    Dep.target = watcher
+}
+
+export function popTarget() {
+    stack.pop()
+    Dep.target = stack[stack.length - 1]
+    console.log(`执行完的watcher出栈，当前watcher重新定位为：`, stack.length ? Dep.target : null)
+}
 
 export default Dep
 

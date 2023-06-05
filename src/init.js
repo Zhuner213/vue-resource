@@ -16,7 +16,7 @@ export function initMixin(Vue) { // 给 Vue 增加 init方法
         // 调用生命周期钩子：beforeCreate
         callHook(this, 'beforeCreate')
 
-        // 初始化状态
+        // 初始化状态，初始化computed，初始化watch
         initState(vm)
 
         // 调用生命周期钩子：created
@@ -59,8 +59,6 @@ export function initMixin(Vue) { // 给 Vue 增加 init方法
 
         // 组件的挂载
         mountComponent(vm, el)
-
-
         // <script> 标签引用的 vue.global.js 这个编译过程是在浏览器运行的
         // runtime 是不包含模版编译的，整个编译打包过程是通过 loader来转义 .vue文件的，用 runtime 的时候不能用 options.template
     }

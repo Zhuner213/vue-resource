@@ -22,22 +22,24 @@
         <span>年龄：{{age}}</span>
         <div>数组：{{arr}}</div>
         <div>对象：{{info}}</div>
+        <div>全称：{{fullname}} {{fullname}} {{fullname}}</div>
     </div>
     <script src="../dist/vue.js"></script>
     <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.js"></script> -->
     <script>
-        Vue.mixin({
-            created() {
-                console.log('mixin1-1')
-                console.log('mixin1-2')
-            }
-        })
-        Vue.mixin({
-            created() {
-                console.log('mixin2-1')
-                console.log('mixin2-2')
-            }
-        })
+        // mixin相关测试代码
+        // Vue.mixin({
+        //     created() {
+        //         console.log('mixin1-1')
+        //         console.log('mixin1-2')
+        //     }
+        // })
+        // Vue.mixin({
+        //     created() {
+        //         console.log('mixin2-1')
+        //         console.log('mixin2-2')
+        //     }
+        // })
 
         // 响应式的数据变化，数据变化了我可以监测到数据的变化
         // 数据的取值 和 更改值我们要监控到
@@ -53,26 +55,48 @@
                             name: '123'
                         }
                     },
-                    arr: [1, 2, { a: 3 }, ['c']] // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
+                    arr: [1, 2, { a: 3 }, ['c']], // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
+                    firstname: 'Designer',
+                    lastname: 'ZZC'
                 }
             },
-            // data: {
-            //     name: 'Diana',
-            //     age: 19,
-            //     info: {
-            //         wife: 'Ava',
-            //         height: '一米八'
-            //     },
-            //     arr: [1, 2, { a: 3 }]
+
+            el: '#app', // 我们要将数据解析到el元素上
+
+            // template: '<div>123</div>',
+
+            // created() {
+            //     console.log('我是data里面的created')
             // },
-            el: '#app', // 我们要将数据 解析到 el元素上
-            // template: '<div>123</div>'
-            created() {
-                console.log('我是data里面的created')
+
+            // 计算属性 依赖的值发生变化才会重新执行用户的方法，计算属性中要维护一个dirty属性，默认计算属性不会立刻执行
+            // 计算属性就是一个defineProperty
+            // 计算属性也是一个watcher，底层就是一个带有dirty的watcher
+            computed: {
+                // fullname() { // defineProperty中的get方法
+                //     return this.firstname + this.lastname
+                // }
+                fullname: {
+                    get() {
+                        console.log('computed run', this)
+                        return this.firstname + this.lastname
+                    },
+                    set(newVal) {
+                        console.log(newVal)
+                    }   
+                }
             }
         })
-        const a = Vue.options
-        console.log(a)
+
+        // vm.$mount('#app')
+        // vm.$mount()
+
+        const opts = Vue.options
+        console.log(opts)
+
+        setTimeout(() => {
+            vm.firstname = 'zzzz'
+        }, 1000)
 
         // setTimeout(() => {
         //     console.log('------------------------------------------')
@@ -80,6 +104,7 @@
         //     vm.info.__ob__.dep.notify() // $set原理
         // }, 1000)
 
+        // nextTick相关测试代码
         // setTimeout(() => {
         //     vm.name = 'Ava'
         //     vm.age = 188
@@ -90,10 +115,9 @@
         //     })
         // }, 1000)
 
-        // vm.$mount('#app')
-        // vm.$mount()
 
-        // 1.模版引擎：性能差，需要正则匹配替换，vue1.0的时候，没有引入 虚拟DOM 的改变
+
+        // 1.模版引擎：性能差，需要正则匹配替换，vue1.0的时候，没有引入虚拟DOM的改变
         // 2.采用虚拟DOM，数据变化后比较虚拟DOM的差异，最后只更新需要更新的地方
         // 3.核心就是我们需要将 模版变成我们的 JS语法，通过 JS语法生成虚拟DOM
 
