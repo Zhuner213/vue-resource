@@ -1,6 +1,8 @@
+import Vue from "./index"
 import Dep from "./observe/dep"
 import { observe } from "./observe/index"
 import Wacther from "./observe/watcher"
+import { isPlainObject } from "./utils"
 
 export function initState(vm) {
     const opts = vm.$options // 获取用户所有的配置项
@@ -8,6 +10,8 @@ export function initState(vm) {
     if (opts.data) initData(vm)
     // 初始化 computed 属性
     if (opts.computed) initComputed(vm)
+    // 初始化 watch 属性
+    if (opts.watch) initWatch(vm)
 
     // ......
 }
@@ -44,10 +48,6 @@ function initData(vm) {
     proxy(vm, '_data', data)
 }
 
-const testObj = {
-    a: 123
-}
-
 // 初始化computed
 function initComputed(vm) {
     const computed = vm.$options.computed
@@ -81,21 +81,63 @@ function defineComputed(target, key, userDef) {
 // 计算属性根本不会收集依赖，只会让自己的依赖属性去收集依赖（这个和vue3不一样）
 function createComputedGetter(key) {
     // 我们需要根据对应watcher的dirty属性来判断：是执行这个computed的getter来重新计算，还是直接返回缓存值即可（这个值存储在wathcer的value属性上）
-    return function getter () {
+    return function getter() {
         // 因为Object.defineProperty，这里的this指向是vm
         const watcher = this._computedWathcers[key]
 
         // 如果dirty为true则说明当前需要重新计算新值（计算完成后还要将dirty置为false）
-        if(watcher.dirty) {
+        if (watcher.dirty) {
             watcher.evaluate() // 求值后，dirty变为了false，下次就不求值了
         }
 
         // 计算属性watcher出栈后，还有渲染watcher，应该让计算属性的依赖属性也去收集上层watcher
-        if(Dep.target) {
+        if (Dep.target) {
             watcher.depend()
         }
 
         // 否则直接返回缓存值，不需要重新计算
         return watcher.value
     }
+}
+
+// 初始化watch
+function initWatch(vm) {
+    const watch = vm.$options.watch
+    for (const key in watch) {
+        const handler = watch[key]
+
+        if (Array.isArray(handler)) {
+            // 如果handler为数组
+            for (let i = 0; i < handler.length; i++) {
+                createWatcher(vm, key, handler[i])
+            }
+        } else {
+            // 否则为 字符串（对应vm上的methods）、函数、对象
+            createWatcher(vm, key, handler)
+        }
+
+    }
+
+}
+
+function createWatcher(vm, expOrFn, handler, options = {}) {
+    // 如果handler为字符串
+    if (typeof handler === 'string') {
+        handler = vm[handler]
+    }
+
+    // 如果handler为普通对象
+    if (isPlainObject(handler)) {
+        options = handler
+        handler = options.handler
+    }
+
+    return vm.$watch(expOrFn, handler, options)
+}
+
+// Vue中不管你以哪种方式定义watch，底层最终还是调用的$watch
+Vue.prototype.$watch = function (expOrFn, cb, options = {}) {
+    options.user = true
+    // 观测的值变化了，直接执行cb函数即可
+    new Wacther(this, expOrFn, options, cb)
 }

@@ -85,12 +85,21 @@
                         console.log(newVal)
                     }   
                 }
+            },
+
+            watch: {
+                firstname(newValue, oldValue) {
+                    console.log(newValue, oldValue, '-------------------------------------------------')
+                }
             }
         })
 
         // vm.$mount('#app')
         // vm.$mount()
 
+        vm.$watch(() => vm.firstname, (newValue, oldValue) => {
+            console.log(newValue, oldValue, '1111111111111111111111')
+        })
         const opts = Vue.options
         console.log(opts)
 

@@ -4,6 +4,7 @@ const LIFECYCLE = [
     'beforeCreate',
     'created'
 ]
+
 LIFECYCLE.forEach(hook => {
     strats[hook] = function (p, c) {
         // 
@@ -21,6 +22,7 @@ LIFECYCLE.forEach(hook => {
         }
     }
 })
+
 // 将儿子和父亲合并 
 export function mergeOptions(parent, child) {
     const options = {}
@@ -46,4 +48,9 @@ export function mergeOptions(parent, child) {
     }
 
     return options
+}
+
+// 判断是否为普通对象
+export function isPlainObject(obj) {
+    return typeof obj === 'object' && obj !== null ? true : false
 }

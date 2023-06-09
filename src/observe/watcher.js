@@ -8,19 +8,29 @@ let id = 0
 // 每个属性都有一个dep（属性就是被观察者），watcher就是观察者（属性变化了会通知观察者来更新）-> 观察者模式
 
 class Wacther { // 不同组件有不同的watcher
-    constructor(vm, fn, options) { // fn就是传进来的 () => { vm._update(vm._render()) }
+    constructor(vm, expOrFn, options, cb) { // fn就是传进来的 () => { vm._update(vm._render()) }
         this.id = id++
         this.renderWatcher = options // 标识此watcher是否为一个渲染watcher
-        this.getter = fn // getter意味着调用这个函数可以发生取值操作
+
+        if (typeof expOrFn === 'string') {
+            this.getter = function () {
+                return vm[expOrFn]
+            }
+        } else {
+            this.getter = expOrFn // getter意味着调用这个函数可以发生取值操作
+        }
+
         this.deps = [] // 后续我们实现计算属性，和一些清理工作需要用到
         this.depsId = new Set() // 用于存储dep的id，去重使用
         this.vm = vm
+        this.cb = cb
         this.lazy = options.lazy // 用于判断此watcher是否创建后立即执行getter
         this.dirty = this.lazy // 用于computed的缓存
+        this.user = options.user // 用于标识是否是用户自己的watcher
 
         if (!this.lazy) {
-            this.get()
-            console.log('watcher初渲染模板完毕') 
+            this.value = this.get()
+            console.log('watcher初渲染模板完毕')
         }
     }
 
@@ -50,7 +60,7 @@ class Wacther { // 不同组件有不同的watcher
 
     depend() { // watcher的depend就是让watcher里面的dep们去depend
         let i = this.deps.length
-        while(i--) {
+        while (i--) {
             this.deps[i].depend()
         }
     }
@@ -58,10 +68,9 @@ class Wacther { // 不同组件有不同的watcher
     // 将当前watcher存放进队列进行等待
     update() {
         // 如果当前为计算属性
-        // if(!this.dirty) {
-        if(this.lazy) {
+        if (this.lazy) {
             this.dirty = true
-        }else{
+        } else {
             // 把当前的watcher暂存起来
             queueWatcher(this)
         }
@@ -69,9 +78,15 @@ class Wacther { // 不同组件有不同的watcher
 
     // 重新渲染更新模板
     run() {
-        console.log('wathcer开始重新渲染最新模板')
-        this.get() // 渲染的时候用的是最新的vm来渲染的
-        console.log('wathcer重新渲染模板完毕')
+        const oldValue = this.value
+
+        if (!this.user) console.log('wathcer开始重新渲染最新模板')
+        const newValue = this.get() // 渲染的时候用的是最新的vm来渲染的
+        if (!this.user) console.log('wathcer重新渲染模板完毕')
+
+        if(this.user) {
+            this.cb(newValue, oldValue)
+        }
     }
 }
 
