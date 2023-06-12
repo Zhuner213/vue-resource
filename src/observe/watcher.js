@@ -42,7 +42,7 @@ class Wacther { // 不同组件有不同的watcher
 
     get() {
         pushTarget(this) // 将Dep.target设为当前watcher
-        console.log(`目前Dep.targer为当前watcher：`, this)
+        console.log(`watcher.get执行，目前Dep.target为当前watcher：`, this)
         const value = this.getter.call(this.vm) // 会去vm上取值 vm._update(vm._render()) 或 返回计算属性的值
         popTarget() // 渲染完毕后当前watcher出栈，Dep.target定位到栈中最后一个watcher，若没有就是undefined
         return value

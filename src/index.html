@@ -21,26 +21,12 @@
         </div>
         <span>年龄：{{age}}</span>
         <div>数组：{{arr}}</div>
-        <div>对象：{{info}}</div>
-        <div>全称：{{fullname}} {{fullname}} {{fullname}}</div>
+        <!-- <div>对象：{{info}}</div> -->
+        <!-- <div>全称：{{fullname}} {{fullname}} {{fullname}}</div> -->
     </div>
     <script src="../dist/vue.js"></script>
     <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.js"></script> -->
     <script>
-        // mixin相关测试代码
-        // Vue.mixin({
-        //     created() {
-        //         console.log('mixin1-1')
-        //         console.log('mixin1-2')
-        //     }
-        // })
-        // Vue.mixin({
-        //     created() {
-        //         console.log('mixin2-1')
-        //         console.log('mixin2-2')
-        //     }
-        // })
-
         // 响应式的数据变化，数据变化了我可以监测到数据的变化
         // 数据的取值 和 更改值我们要监控到
         const vm = new Vue({
@@ -55,7 +41,7 @@
                             name: '123'
                         }
                     },
-                    arr: [1, 2, { a: 3 }, ['c']], // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
+                    arr: [1, 2, { a: 3 }, [{c: 123}]], // 给数组本身增加dep，如果数组新增了某一项，可以触发dep更新
                     firstname: 'Designer',
                     lastname: 'ZZC'
                 }
@@ -63,55 +49,34 @@
 
             el: '#app', // 我们要将数据解析到el元素上
 
-            // template: '<div>123</div>',
-
-            // created() {
-            //     console.log('我是data里面的created')
-            // },
-
             // 计算属性 依赖的值发生变化才会重新执行用户的方法，计算属性中要维护一个dirty属性，默认计算属性不会立刻执行
             // 计算属性就是一个defineProperty
             // 计算属性也是一个watcher，底层就是一个带有dirty的watcher
-            computed: {
-                // fullname() { // defineProperty中的get方法
-                //     return this.firstname + this.lastname
-                // }
-                fullname: {
-                    get() {
-                        console.log('computed run', this)
-                        return this.firstname + this.lastname
-                    },
-                    set(newVal) {
-                        console.log(newVal)
-                    }   
-                }
-            },
+            // computed: {
+            //     // fullname() { // defineProperty中的get方法
+            //     //     return this.firstname + this.lastname
+            //     // }
+            //     fullname: {
+            //         get() {
+            //             console.log('computed run', this)
+            //             return this.firstname + this.lastname
+            //         },
+            //         set(newVal) {
+            //             console.log(newVal)
+            //         }   
+            //     }
+            // },
 
-            watch: {
-                firstname(newValue, oldValue) {
-                    console.log(newValue, oldValue, '-------------------------------------------------')
-                }
-            }
+            // watch: {
+            //     firstname(newValue, oldValue) {
+            //         console.log(newValue, oldValue, '-------------------------------------------------')
+            //     }
+            // }
         })
 
-        // vm.$mount('#app')
-        // vm.$mount()
-
-        vm.$watch(() => vm.firstname, (newValue, oldValue) => {
-            console.log(newValue, oldValue, '1111111111111111111111')
-        })
-        const opts = Vue.options
-        console.log(opts)
-
-        setTimeout(() => {
-            vm.firstname = 'zzzz'
-        }, 1000)
-
-        // setTimeout(() => {
-        //     console.log('------------------------------------------')
-        //     vm.info.title = '一米吧！！！'
-        //     vm.info.__ob__.dep.notify() // $set原理
-        // }, 1000)
+        // vm.$watch(() => vm.firstname, (newValue, oldValue) => {
+        //     console.log(newValue, oldValue, '1111111111111111111111')
+        // })
 
         // nextTick相关测试代码
         // setTimeout(() => {

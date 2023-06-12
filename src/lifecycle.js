@@ -96,6 +96,7 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
         vm._update(vm._render()) // vm.$options.render 虚拟节点
     }
 
+    console.log('准备开始创建初渲染watcher')
     const watcher = new Wacther(vm, updateComponent, true) // true 用于标识是一个渲染watcher
     // console.log('根实例的watcher：', watcher)
 }
@@ -108,6 +109,7 @@ export function mountComponent(vm, el) { // 这里的 el 是通过 querySelector
 
 export function callHook(vm, hook) { // 调用生命周期钩子
     let handlers = vm.$options[hook]
+    console.log(`此时为生命周期${hook}阶段`)
     // 如果存在该钩子（此时必定是数组）
     if (handlers) handlers.forEach(handler => handler.call(vm))
 }

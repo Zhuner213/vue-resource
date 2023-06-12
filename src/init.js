@@ -27,6 +27,7 @@ export function initMixin(Vue) { // 给 Vue 增加 init方法
     }
 
     Vue.prototype.$mount = function(el) {
+        console.log('准备开始数据的挂载')
         const vm = this
         el = document.querySelector(el) // 获取到传入 el 对应的 DOM节点
         const opts = vm.$options

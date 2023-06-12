@@ -36,7 +36,7 @@ export function pushTarget(watcher) {
 export function popTarget() {
     stack.pop()
     Dep.target = stack[stack.length - 1]
-    console.log(`执行完的watcher出栈，当前watcher重新定位为：`, stack.length ? Dep.target : null)
+    console.log(`执行完的watcher出栈，当前watcher重新定位为：`, stack.length ? Dep.target : '当前栈中没有任何watcher')
 }
 
 export default Dep

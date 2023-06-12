@@ -5,6 +5,7 @@ import Wacther from "./observe/watcher"
 import { isPlainObject } from "./utils"
 
 export function initState(vm) {
+    console.log('准备开始进行数据初始化')
     const opts = vm.$options // 获取用户所有的配置项
     // 初始化 data 属性
     if (opts.data) initData(vm)
@@ -14,6 +15,8 @@ export function initState(vm) {
     if (opts.watch) initWatch(vm)
 
     // ......
+
+    console.log('数据初始化完毕')
 }
 
 function proxy(vm, target, data) {
@@ -46,6 +49,8 @@ function initData(vm) {
 
     // 对数据进行代理，使用户能直接通过 vm.xxx 取到 data 上的某个属性
     proxy(vm, '_data', data)
+
+    console.log('数据劫持和代理完毕')
 }
 
 // 初始化computed

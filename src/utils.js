@@ -54,3 +54,13 @@ export function mergeOptions(parent, child) {
 export function isPlainObject(obj) {
     return typeof obj === 'object' && obj !== null ? true : false
 }
+
+// 给对象定义属性
+export function def(target, key, value, enumerable = false) {
+    Object.defineProperty(target, key, {
+        value,
+        enumerable,
+        writable: true,
+        configurable: true
+    })
+}
