@@ -76,7 +76,7 @@ function codegen(ast) {
 
 export function compileToFunction(template) {
     // 1.将 template 转化成 ast 语法树
-    // template是一段 outerHTML文本
+    // template是一段outerHTML文本
     const ast = parseHTML(template)
     console.log(`将template转化成ast抽象语法树：`, ast)
 
